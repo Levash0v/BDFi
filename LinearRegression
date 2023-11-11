@@ -1,49 +1,100 @@
+# Импорт необходимых библиотек
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split 
 from sklearn.linear_model import LinearRegression 
-from sklearn.metrics import mean_squared_error # Импорт необходимых библиотек
+from sklearn.metrics import mean_squared_error 
 
-df = pd.read_csv('homework.csv') # Загружаем данные в переменную df из файла homework.csv
+# Загружаем данные в переменную df из файла homework.csv
+df = pd.read_csv('homework.csv')
+
+# Смотрим данные и переменные
 df.head()
-df.describe() # Смотрим данные и переменные
+df.describe()
 
-fig, ax = plt.subplots(figsize=(10, 6))
-correlation_matrix = df.corr().round(2)
-sns.heatmap(data=correlation_matrix, annot=True) # Построена тепловая карта для визуализации корреляции между переменными
+# Построить scatter график по параметрам crim, medv
+plt.scatter(df['crim'], df['medv'])
 
-plt.scatter(df['crim'], df['medv']) # Построить scatter график по параметрам crim, medv
-plt.scatter(df['rm'], df['medv']) # Построить scatter график по параметрам rm, medv
+# Построить scatter график по параметрам rm, medv
+plt.scatter(df['rm'], df['medv']) 
 
-# Для решения задачи прогнозирования средней стоимости дома в Бостоне, сформированы X и y из df, 
-# на тепловой карте sns.heatmap видно что переменная medv - Средняя стоимость домов, 
-# занимаемых владельцами, в 1000 долларов США, имеет высокую корреляцию с двумя другими переменными:
-# lsat - % более низкого статуса населения(-0.74 высокая отрицательная корреляция)  и 
-# rm - среднее количество комнат в жилище(0.69 высокая положительная корреляция)
-# возьмом эти данные для обучения модели
-
-X = pd.DataFrame(np.c_[df['lstat'], df['rm']], columns = ['lstat','rm']) # Сформированы X и y из df
+# Задача 1 medv
+# Для решения задачи прогнозирования средней стоимости дома в Бостоне, сформируем X и y из df, выбрав нужные колонки
+X = df[['crim', 'zn', 'indus', 'chas', 'rm', 'age', 'dis', 'rad',
+       'tax', 'ptratio', 'black', 'lstat', 'nox']]
 y = df['medv']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2) # Разбиты данные на данные для обучения и проверки переменная medv
+# Разбить данные на данные для обучения и проверки
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
+# Создать и обучить модель LinearRegression
 model = LinearRegression()
 model.fit(X, y)
 model.score(X, y)
-#>>> 0.6343339677660715
+>>>0.7331394355527803
 
+# Оценить качество на тестовой выборки
 y_pred = model.predict(X)
 mse = mean_squared_error(y, y_pred)
 mse
+>>>22.38954942364789
+
+# Задача 2 nox
+# Для решения задачи прогнозирования уровня оксида азота, nox сформируем X и y из df, выбрав нужные колонки
+X = df[['crim', 'zn', 'indus', 'chas', 'rm', 'age', 'dis', 'rad',
+       'tax', 'ptratio', 'black', 'lstat', 'medv']]
+y = df['nox']
+
+# Разбить данные на данные для обучения и проверки
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Создать и обучить модель LinearRegression
+model = LinearRegression()
+model.fit(X, y)
+model.score(X, y)
+>>>0.7812649740378022
+
+# Оценить качество на тестовой выборки
+y_pred = model.predict(X)
+mse = mean_squared_error(y, y_pred)
+mse
+>>>0.002881802398977249
+
+# Далее представенно решение предидущих задач с предварительным выбором переменных, 
+# которые больше всего коррелируют с искомыми переменными
+
+# Построим тепловую карту для визуализации корреляций между переменными
+fig, ax = plt.subplots(figsize=(10, 6))
+correlation_matrix = df.corr().round(2)
+sns.heatmap(data=correlation_matrix, annot=True) 
+
+# Для решения задачи прогнозирования средней стоимости дома в Бостоне.
+# на тепловой карте видно что переменная medv, имеет высокую корреляцию с двумя другими переменными:
+# lsat - % более низкого статуса населения и rm - среднее количество комнат в жилище
+# возьмом эти переменные
+
+X1 = pd.DataFrame(np.c_[df['lstat'], df['rm']], columns = ['lstat','rm'])
+y1 = df['medv']
+
+X1_train, X1_test, y1_train, y1_test = train_test_split(X1, y1, test_size=0.2)
+
+model1 = LinearRegression()
+model1.fit(X1, y1)
+model1.score(X1, y1)
+#>>> 0.6343339677660715
+
+y_pred1 = model.predict(X1)
+mse1 = mean_squared_error(y1, y_pred1)
+mse1
 #>>> 30.679308942517157
 
-# Для решения задачи прогнозирования nox, уровня оксида азота, на тепловой карте видно, что
-# nox - уровня оксида азота, имеет высокую корреляцию с переменными:
-# indus - доля площадей под неторговую деятельность на город (0.75 высокая положительная корреляция)
-# dis – взвешенные расстояния до пяти центров занятости Бостона.(-0.77 высокая отрицательная корреляция)  и 
-# возьмом эти данные для обучения модели
+# Для решения задачи прогнозирования уровня оксида азота,
+# nox имеет высокую корреляцию с переменными:
+# indus - доля площадей под неторговую деятельность на город и
+# dis – взвешенные расстояния до пяти центров занятости Бостона 
+# возьмом эти переменные
 
 X1 = pd.DataFrame(np.c_[df['indus'], df['dis']], columns = ['indus','dis'])
 y1 = df['nox']
