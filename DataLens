@@ -1,0 +1,14 @@
+import numpy as np, matplotlib as mpl, matplotlib.pyplot as plt, pandas as pd
+import seaborn as sns, math, os, warnings
+import sys
+
+df = pd.read_csv('CR Start_Payment_daily dinamics.csv')
+df1 = pd.read_csv('Onboarding_steps_daily dinamics.csv')
+
+df = df.drop(0)
+df1 = df1.drop(0)
+
+df1 = df1[['\tOnboarding started', '\tOnboarding step AnimatedIntro', '\tOnboarding step PlanningHorizon', '\tOnboarding step MakeItYours', '\tOnboarding step HorizonPreview']]
+
+# MakeItYours и HorizonPreview два шага онбординга на которых уходить больше остальных и HorizonPreview уходит больше всех
+df1.plot(title="DataFrame Plot")
