@@ -11,4 +11,4 @@ df1 = df1.drop(0)
 df1 = df1[['\tOnboarding started', '\tOnboarding step AnimatedIntro', '\tOnboarding step PlanningHorizon', '\tOnboarding step MakeItYours', '\tOnboarding step HorizonPreview']]
 
 # MakeItYours и HorizonPreview два шага онбординга на которых уходить больше остальных и HorizonPreview уходит больше всех
-df1.plot(title="DataFrame Plot")
+df1.plot(title="Эффективность шагов онбординга")
