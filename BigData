@@ -19,8 +19,8 @@ for i, row in df_cp.iterrows():
     for a in row:
         c.append(a)
 
-plt.plot(usdR, color = 'green')
-plt.plot(c, color = 'red')
+usdR = usdR.iloc[:60]
+usdR.insert(loc=len(usdR.columns), column='CPI', value=c)
 
 plt.plot(usdR, color = 'green')
 plt.plot(c, color = 'red')
@@ -28,3 +28,6 @@ plt.title ("Графики курса доллара и индекса потр�
 plt.xlabel("Период(5лет) в месяцах")
 plt.ylabel("Значение курса/индекса")
 plt.legend(["Курс доллара","Индекс инфляции"])
+
+usdR = usdR.groupby('Доллар США')[['Доллар США', 'CPI']].mean().corr()
+sns.heatmap(data=usdR, annot=True, cmap='PuBu')
