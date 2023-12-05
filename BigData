@@ -12,11 +12,10 @@ df_usdR = df_usd.pivot(index="data", columns="cdx", values="curs")
 usdR = df_usdR.resample('M').mean()
 usdR.reset_index(drop=True, inplace=True)
 
-df_cp = df_сpi.iloc[27:,1:]
+df_cp = df_сpi.iloc[28:,1:]
 df_cp = df_cp.fillna(df_cp.mean())
 c = []
 for i, row in df_cp.iterrows():
-    row = row[1:] #row[:1, 0:])
     for a in row:
         c.append(a)
 
