@@ -6,4 +6,4 @@ dfс = pd.read_csv('russia.index.cpi.csv')
 df_usd = pd.read_excel('RC_F01_12_2018_T02_12_2023.xlsx', index_col=0)
 
 df_usd['data'] = pd.to_datetime(df_usd['data'])
-df.plot(kind='line', x='data', y='curs')
+df_usd.plot(kind='line', x='data', y='curs')
